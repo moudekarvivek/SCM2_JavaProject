@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" th:href="@{'/css/output.css'}" />
+</head>
+<body>
+    <div class="bg-gray-400 w-1/2 p-4 flex flex-col space-y-3 mx-auto mt-4 items-center">
+        <h1 class="text-2xl font-bold" data-th-text="${name}">
+            Welcome to Home Page
+        </h1>
+        <p class="text-2xl text-gray-700">
+            Youtube Channel : <span data-th-text="${Youtube_Channel}"></span>
+        </p>
+        <p>GitHub Repo Link : <span th:text="${GitHub_Repository}"></span></p>
+        <a th:href="${GitHub_Repository}">Click here to open</a>
+        <p class="text-gray-600">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, veniam tempora. Placeat, doloremque molestiae. Quod molestiae enim rem veniam ducimus nulla, quos quo distinctio laudantium, nesciunt tempore esse alias. Ipsum perferendis impedit vitae fugit obcaecati beatae et, nemo repellat consectetur veniam sequi, pariatur cumque quis! Earum, nobis nam? Necessitatibus, totam.
+        </p>
+        <div>
+            <button class="px-3 py-3 rounded bg-blue-700 text-white hover:bg-blue-600">
+                Click Me
+            </button>
+        </div>
+    </div>
+</body>
+</html>
