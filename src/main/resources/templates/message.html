@@ -18,5 +18,6 @@
     <div>
       <span data-th-text="*{content}"></span> <!--*{content} Will access the property of object directly-->
     </div>
-
+    
+    <th:block th:text="${@sessionHelper.removeMessage()}"></th:block>
 </div>

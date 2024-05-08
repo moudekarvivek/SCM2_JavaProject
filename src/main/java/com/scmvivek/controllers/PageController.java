@@ -108,7 +108,7 @@ public class PageController {
         System.out.println("User Saved");
         // Message= "Registration Successful"
 
-        Message message = Message.builder().content("Registration Successful").type(MessageType.yellow).build();
+        Message message = Message.builder().content("Registration Successful").type(MessageType.green).build();
         //add the message: [to Send message we will use session]
         session.setAttribute("message", message); // This message will be shown after do register is called
         
