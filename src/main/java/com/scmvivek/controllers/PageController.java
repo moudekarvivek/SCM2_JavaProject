@@ -3,6 +3,7 @@ package com.scmvivek.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import com.scmvivek.helpers.MessageType;
 import com.scmvivek.services.UserService;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 
 @Controller
@@ -69,18 +71,23 @@ public class PageController {
         // userForm.setName("Vivek");
         model.addAttribute("userForm", userForm); // sending blank object to register page (register.html
         
-        return new String("register");
+        return "register"; 
+        // return new String("register");
     }
     
     //Processing register
     @RequestMapping(value = "/do-register", method = RequestMethod.POST)
-    public String processRegister(@ModelAttribute UserForm userForm,HttpSession session){ // In this userForm automatically object will get create and the data which is coming in the form will get set in this object
+    public String processRegister(@Valid @ModelAttribute UserForm userForm, BindingResult rBindingResult, HttpSession session){ // In this userForm automatically object will get create and the data which is coming in the form will get set in this object
         System.out.println("Processing Registeration");
         // fetch form data
         // To recieve data our to fetch it we will make class
         // UserForm class to recieve data in this class object
         System.out.println(userForm);
+       
         // Validate Form Data
+        if(rBindingResult.hasErrors()){
+            return "register"; // If there is any error in the form then it will return to the register page
+        }
         
         // Save to Database
         // userservice this will content all methods which will execute business logic of the user
