@@ -13,13 +13,16 @@ import jakarta.persistence.OneToMany;
 public class Contact {
     @Id
     private String id;
+    
     private String name;
     private String email;
     private String phoneNumber;
     private String address;
     private String picture;
+    
     @Column(length = 10000)
     private String description;
+    
     private boolean favorite=false;
     private String instagramLink;
     private String facebookLink;
