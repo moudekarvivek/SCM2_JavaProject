@@ -5,8 +5,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 import com.scmvivek.services.impl.SecurityCustomUserDetailService;
 
@@ -37,8 +40,10 @@ public class SecurityConfig {
     @Autowired
     private SecurityCustomUserDetailService userDetailService; 
     // Now we want to authenticate the user using database. to tell userdetails we will provide DAOAuthenticationProvider
+   
+    // Configuration of AuthenticationProvider for spring security
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public DaoAuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(); // This DaoAuthenticationProvider have all the methods with help of which we can register our service
         // Object of user detail service
         daoAuthenticationProvider.setUserDetailsService(userDetailService); // It will tell the userdetails service that we are using database to authenticate the user
@@ -48,6 +53,24 @@ public class SecurityConfig {
         return daoAuthenticationProvider;
     }
     
+    @Bean // It will create a bean of SecurityFilterChain
+    public SecurityFilterChain  securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+       //Configuration
+       // we have configured the URL's which will be public and which will be private
+       
+       httpSecurity.authorizeHttpRequests(authorize->{
+            // authorize.requestMatchers("/about","/register","/services").permitAll();
+            authorize.requestMatchers("/user/**").authenticated(); // It will allow all the url starting with /user
+            authorize.anyRequest().permitAll(); // It will allow all the request
+        });
+        
+        //Form default login
+        // If we want to cutomize anything we will come here: related to form login
+        httpSecurity.formLogin(Customizer.withDefaults()); // It will enable the form login for /user/profile etc.
+       
+       return httpSecurity.build(); // build() It will return default security filter chain
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder(); // It will encode the password
