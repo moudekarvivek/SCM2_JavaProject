@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
+@Entity(name = "user")
 @Table(name = "users") //It will create a table with name users
 @Getter
 @Setter
@@ -57,4 +57,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true) // If user get dleted then all the contacts related to that user will also get deleted
     private List<Contact> contacts = new ArrayList<>();
 
-}
+   
+    }
+
