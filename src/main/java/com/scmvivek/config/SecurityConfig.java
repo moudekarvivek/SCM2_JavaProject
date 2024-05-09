@@ -1,12 +1,14 @@
 package com.scmvivek.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.scmvivek.services.impl.SecurityCustomUserDetailService;
 
 
 @Configuration
@@ -32,4 +34,22 @@ public class SecurityConfig {
     //     var inMemoryUserDetailsManager = new InMemoryUserDetailsManager(user1,user2); //It will store the user details in memory so we will not use this in production we will use database user
     //     return  inMemoryUserDetailsManager;
     // }
+    @Autowired
+    private SecurityCustomUserDetailService userDetailService; 
+    // Now we want to authenticate the user using database. to tell userdetails we will provide DAOAuthenticationProvider
+    @Bean
+    public AuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(); // This DaoAuthenticationProvider have all the methods with help of which we can register our service
+        // Object of user detail service
+        daoAuthenticationProvider.setUserDetailsService(userDetailService); // It will tell the userdetails service that we are using database to authenticate the user
+        // password encoder Object we will provide here
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder()); // It will encode the password
+        
+        return daoAuthenticationProvider;
+    }
+    
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder(); // It will encode the password
+    }
 }
