@@ -25,6 +25,11 @@ public class PageController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/")
+    public String index(){
+        return "redirect:/home"; // It will redirect to login page
+    }
+
     @RequestMapping("/home")
     public String home(Model model) {
         System.out.println(" Home Page handler");
