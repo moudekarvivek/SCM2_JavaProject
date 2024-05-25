@@ -1,17 +1,28 @@
 package com.scmvivek.config;
 
+// import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
+// import org.springframework.security.config.Customizer;
+// import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+// import org.springframework.security.core.Authentication;
+// import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+// import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+// import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import com.scmvivek.services.impl.SecurityCustomUserDetailService;
+
+// import jakarta.servlet.ServletException;
+// import jakarta.servlet.http.HttpServletRequest;
+// import jakarta.servlet.http.HttpServletResponse;
 
 
 @Configuration
@@ -39,6 +50,9 @@ public class SecurityConfig {
     // }
     @Autowired
     private SecurityCustomUserDetailService userDetailService; 
+    
+    @Autowired
+    private OAuthAuthenticationSuccessHandler handler;
     // Now we want to authenticate the user using database. to tell userdetails we will provide DAOAuthenticationProvider
    
     // Configuration of AuthenticationProvider for spring security
@@ -66,9 +80,56 @@ public class SecurityConfig {
         
         //Form default login
         // If we want to cutomize anything we will come here: related to form login
-        httpSecurity.formLogin(Customizer.withDefaults()); // It will enable the form login for /user/profile etc.
+        httpSecurity.formLogin(formLogin -> {
+            
+            formLogin.loginPage("/login");
+            formLogin.loginProcessingUrl("/authenticate"); //when we submit the form it will go to this url
+            formLogin.successForwardUrl("/user/dashboard"); // It will redirect to this url after successful login
+            //formLogin.failureForwardUrl("/login?error=true");
+
+            formLogin.usernameParameter("email"); // It will take the email as username
+            formLogin.passwordParameter("password");
+            
+            // formLogin.failureHandler(new AuthenticationFailureHandler() {
+
+            //     // This will run when the authentication fails
+            //     @Override
+            //     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+            //             AuthenticationException exception) throws IOException, ServletException {
+            //         // 
+            //         throw new UnsupportedOperationException("Unimplemented method 'onAuthenticationFailure'");
+            //     }
+                
+            // });
+
+            // formLogin.successHandler(new AuthenticationSuccessHandler() {
+
+            //     @Override
+            //     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+            //             Authentication authentication) throws IOException, ServletException {
+            //         // 
+            //         throw new UnsupportedOperationException("Unimplemented method 'onAuthenticationSuccess'");
+            //     }
+                
+            // });
+            
+        }); // It will enable the form login for /user/profile etc.
        
-       return httpSecurity.build(); // build() It will return default security filter chain
+    httpSecurity.csrf(AbstractHttpConfigurer::disable); // It will disable the csrf token (Cross Site Request Forgery) we can do get request of logout
+        httpSecurity.logout(logoutForm->{
+        logoutForm.logoutUrl("/logout");
+        logoutForm.logoutSuccessUrl("/login?logout=true");
+        });
+
+        //Oauth Configuration
+        httpSecurity.oauth2Login(oauth->{
+            oauth.loginPage("/login");
+            oauth.successHandler(handler);
+        
+        });
+        
+        // It will enable the oauth2 login
+        return httpSecurity.build(); // build() It will return default security filter chain
     }
 
     @Bean

@@ -1,12 +1,20 @@
 package com.scmvivek.controllers;
 
+
+import org.springframework.security.core.Authentication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.scmvivek.helpers.Helper;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
     
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
+
     // User Dashboard Page
     @RequestMapping(value = "/dashboard")
     public String userDashboard(){
@@ -16,7 +24,11 @@ public class UserController {
     
     //user Profile Page
     @RequestMapping(value = "/profile")
-    public String userProfile(){
+    public String userProfile(Authentication authentication){
+        
+        
+        String username = Helper.getEmailOfLoggedInUser(authentication);
+        logger.info("Logged in User: {} ",username);
         System.out.println("User Profile Page");
         return "user/profile";
     }

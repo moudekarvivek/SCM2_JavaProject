@@ -4,5 +4,5 @@ public class AppConstants {
 
     public static final String APP_Name = "SCM";
 
-    public static final String ROLW_USER = "ROLE_USER";
+    public static final String ROLE_USER = "ROLE_USER";
 }
